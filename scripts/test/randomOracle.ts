@@ -1,7 +1,5 @@
 import hre, { ethers } from "hardhat";
 import { saveDeployedAddress } from "../../utils/saveDeployedAddress";
-import { readDeployedAddress } from "../../utils/readDeployedAddress";
-import { SimpleRandomOracle__factory } from "../../typechain-types";
 
 async function main() {
   const [signer] = await ethers.getSigners();
