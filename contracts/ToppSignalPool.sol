@@ -9,7 +9,6 @@ import "./interfaces/IPriceOracle.sol";
 import "./interfaces/IRandomOracle.sol";
 
 contract ToppSignalPool is IToppSignalPool {
-    
     IPriceOracle public priceOracle;
     IRandomOracle public randomOracle;
 
@@ -38,33 +37,53 @@ contract ToppSignalPool is IToppSignalPool {
         ticket = ISignalTicket(_ticket);
     }
 
-    // User called functions
-    function _placeBid(uint time, uint price, uint amount, address sender) internal {
-        
+    // External functions
+    function placeBid(uint time, uint price, uint amount) external {
+        return _placeBid(time, price, amount, msg.sender);
     }
 
-    function _settle(uint time, address sender) internal {
-
+    function settle(uint time) external {
+        return _settle(time, msg.sender);
     }
 
-    function _collectReserve(uint time, address sender) external {
-
+    function collectReserve(uint time) external {
+        return _collectReserve(time, msg.sender);
     }
 
-    function _collectFee(uint time, address sender) external {
-
+    function collectFee(uint time) external {
+        return _collectFee(time, msg.sender);
     }
 
-    function _claimPrizes(uint time, uint price, uint amount, address sender) external {
-
+    function claimPrizes(uint time, uint price, uint amount) external {
+        return _claimPrizes(time, price, amount, msg.sender);
     }
+
+    // Internal functions
+    function _placeBid(
+        uint time,
+        uint price,
+        uint amount,
+        address sender
+    ) internal {}
+
+    function _settle(uint time, address sender) internal {}
+
+    function _collectReserve(uint time, address sender) internal {}
+
+    function _collectFee(uint time, address sender) internal {}
+
+    function _claimPrizes(
+        uint time,
+        uint price,
+        uint amount,
+        address sender
+    ) internal {}
 
     // Contract called functions
-    function fulfillPrice(uint time, uint price) external onlyPriceOracle {
+    function fulfillPrice(uint time, uint price) external onlyPriceOracle {}
 
-    }
-
-    function fulfillRandom(uint time, uint[] calldata values) external onlyRandomOracle {
-
-    }
+    function fulfillRandom(
+        uint time,
+        uint[] calldata values
+    ) external onlyRandomOracle {}
 }
