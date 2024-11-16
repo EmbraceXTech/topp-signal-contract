@@ -271,12 +271,8 @@ describe("ERC20ToppSignalPool", function () {
     });
 
     it("Must be able to fulfill settlement during close status", async function () {
-      const {
-        toppSignalPool,
-        priceOracle,
-        randomOracle,
-        time,
-      } = await loadFixture(placeBids);
+      const { toppSignalPool, priceOracle, randomOracle, time } =
+        await loadFixture(placeBids);
 
       const expectedExact = "6000000"; // 60000.00 (2 decimals)
       const expectedExactWeight = "10";
@@ -291,9 +287,9 @@ describe("ERC20ToppSignalPool", function () {
       await priceOracle.fulfillPrice(time, expectedExact);
       await randomOracle.fulfillRandomness(time, [1, 2, 3]);
 
-      const settledPrice = await toppSignalPool.settledExact(time);
+      const settledExact = await toppSignalPool.settledExact(time);
       const settledExactWeight = await toppSignalPool.settledExactWeight(time);
-      expect(expectedExact).to.equal(settledPrice);
+      expect(expectedExact).to.equal(settledExact);
       expect(expectedExactWeight).to.equal(settledExactWeight);
 
       for (let i = 0; i < 3; i++) {
@@ -315,5 +311,48 @@ describe("ERC20ToppSignalPool", function () {
         expect(expectedLuckyWeight[i]).to.equal(settledLuckyWeights);
       }
     });
+
+    it("Must be able to handle low volume cases", async function () {
+      const { toppSignalPool, time, priceOracle, randomOracle } =
+        await loadFixture(placeBid);
+
+      const expectedExact = "6001000";
+      const expectedExactWeight = "0";
+
+      const expectedClosest = ["6000000"];
+      const expectedClosestWeights = ["10"];
+
+      const expectedLucky = ["6000000"];
+      const expectedLuckyWeight = ["10"];
+
+      await toppSignalPool.settle(time);
+      await priceOracle.fulfillPrice(time, expectedExact);
+      await randomOracle.fulfillRandomness(time, [1, 2, 3]);
+
+      const settledExact = await toppSignalPool.settledExact(time);
+      const settledExactWeight = await toppSignalPool.settledExactWeight(time);
+      expect(expectedExact).to.equal(settledExact);
+      expect(expectedExactWeight).to.equal(settledExactWeight);
+
+      for (let i = 0; i < 1; i++) {
+        const settledClosest = await toppSignalPool.settledClosest(time, i);
+        const settledClosestWeights =
+          await toppSignalPool.settledClosestWeights(time, i);
+
+        expect(expectedClosest[i]).to.equal(settledClosest);
+        expect(expectedClosestWeights[i]).to.equal(settledClosestWeights);
+      }
+
+      for (let i = 0; i < 1; i++) {
+        const settledLucky = await toppSignalPool.settledLucky(time, i);
+        const settledLuckyWeights = await toppSignalPool.settledLuckyWeights(
+          time,
+          i
+        );
+        expect(expectedLucky[i]).to.equal(settledLucky);
+        expect(expectedLuckyWeight[i]).to.equal(settledLuckyWeights);
+      }
+    });
+
   });
 });
