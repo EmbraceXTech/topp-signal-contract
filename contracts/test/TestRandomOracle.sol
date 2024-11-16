@@ -6,8 +6,10 @@ import "../interfaces/IRandomOracleCaller.sol";
 
 contract TestRandomOracle is IRandomOracle {
     IRandomOracleCaller public caller;
+    uint[] public lastValues;
+    uint public lastTime;
 
-    function requestRandomness(uint time) external override {
+    function requestRandomness(uint time, uint amount) external override {
         
     }
 

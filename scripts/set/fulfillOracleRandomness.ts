@@ -12,14 +12,10 @@ async function main() {
     signer
   );
 
-  const callerAddress = await simpleRandomOracle.caller();
-
-  await simpleRandomOracle.setCaller(callerAddress);
-
-  const time = ethers.parseEther("10");
+  const time = 10;
   const randomValue = Math.floor(Math.random() * 1000000); // Random number between 0 and 1M
   
-  const tx = await simpleRandomOracle.fulfillRandomness(time, randomValue);
+  const tx = await simpleRandomOracle.fulfillRandomness(time, [randomValue, randomValue, randomValue]);
   await tx.wait();
 
   console.log("Transaction hash:", tx.hash);

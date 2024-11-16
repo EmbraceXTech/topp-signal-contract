@@ -150,7 +150,7 @@ abstract contract ToppSignalPool is IToppSignalPool, IPriceOracleCaller, IRandom
         require(block.timestamp >= time, "settle: Time not passed");
 
         priceOracle.requestPrice(time);
-        randomOracle.requestRandomness(time);
+        randomOracle.requestRandomness(time, 3);
 
         sender; // Unused variable
 

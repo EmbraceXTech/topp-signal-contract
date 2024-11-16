@@ -14,7 +14,7 @@ contract TestRandomOracleCaller is IRandomOracleCaller {
     }
 
     function requestRandomness(uint time) external {
-        oracle.requestRandomness(time);
+        oracle.requestRandomness(time, 3);
     }
 
     function fulfillRandomness(uint time, uint[] calldata values) external override {

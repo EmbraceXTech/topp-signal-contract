@@ -12,10 +12,6 @@ async function main() {
     signer
   );
 
-  const callerAddress = await simplePriceOracle.caller();
-
-  await simplePriceOracle.setCaller(callerAddress);
-
   const time = ethers.parseEther("10");
   const price = ethers.parseEther("1"); // 1 ETH as example price
   

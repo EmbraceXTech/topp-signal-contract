@@ -8,22 +8,20 @@ import "../interfaces/IRandomOracleCaller.sol";
 
 contract SimpleRandomOracle is IRandomOracle {
     IRandomOracleCaller public caller;
-    uint[] public latestRandomness;
-    uint public latestTimestamp;
+    mapping(uint => uint[]) public randomness;
 
-    event RandomnessRequested(uint time);
+    event RandomnessRequested(uint time, uint amount);
     event RandomnessUpdated(uint timestamp, uint[] randomness);
 
-    function requestRandomness(uint time) external override {
-        require(caller != IRandomOracleCaller(msg.sender), "Unauthorized");
-        caller.fulfillRandomness(time, latestRandomness);
-        emit RandomnessRequested(time);
+    function requestRandomness(uint time, uint amount) external override {
+        require(caller == IRandomOracleCaller(msg.sender), "Unauthorized");
+        emit RandomnessRequested(time, amount);
     }
 
-    function updateRandomness(uint[] calldata randomness) external {
-        latestRandomness = randomness;
-        latestTimestamp = block.timestamp;
-        emit RandomnessUpdated(block.timestamp, randomness);
+    function fulfillRandomness(uint time, uint[] calldata _randomness) external {
+        randomness[time] = _randomness;
+        IRandomOracleCaller(caller).fulfillRandomness(time, _randomness);
+        emit RandomnessUpdated(time, _randomness);
     }
 
     function setCaller(address _caller) external {
